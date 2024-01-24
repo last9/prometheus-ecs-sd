@@ -7,6 +7,7 @@ This Python script dynamically generates a Prometheus `file_sd_config.json` file
 ## Prerequisites
 
 - Python 3.x
+- Poetry library
 - Boto3 library
 - AWS CLI (optional, for AWS configurations)
 - AWS account with appropriate permissions
@@ -17,8 +18,8 @@ This Python script dynamically generates a Prometheus `file_sd_config.json` file
 1. **Clone the Repository**:
 
    ```sh
-   git clone https://your-repository-url.git
-   cd your-repository-directory
+   git clone https://github.com/last9/prometheus-ecs-sd.git
+   cd prometheus-ecs-sd
    ```
 
 2. **Install Dependencies**:
@@ -26,7 +27,7 @@ This Python script dynamically generates a Prometheus `file_sd_config.json` file
    Install the required Python packages using:
 
    ```sh
-   pip install boto3
+   poetry install
    ```
 
 3. **AWS Configuration**:
@@ -48,7 +49,7 @@ python ecs_service_discovery.py <cluster_name> [--role_arn <role_arn>] --output_
 ### Example
 
 ```sh
-python ecs_service_discovery.py my-cluster --role_arn arn:aws:iam::123456789012:role/myRole --output_dir /path/to/output --scrape_port 9097
+python main.py --cluster-name my-cluster --role_arn arn:aws:iam::123456789012:role/myRole --output_dir /path/to/output --scrape_port 9097
 ```
 
 ## Docker Container
