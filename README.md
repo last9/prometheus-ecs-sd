@@ -83,7 +83,3 @@ The script outputs a file named `ecs_file_sd_config.json` in the specified outpu
 ## Note
 
 The script is designed for dynamic service discovery in AWS ECS environments. Ensure that the AWS credentials provided have the necessary permissions to access ECS services.
-
----
-
-This `README.md` provides comprehensive information on using your Python script and the Docker container. Feel free to modify it to include additional details like troubleshooting tips, contribution guidelines, licensing, or support information as needed.
