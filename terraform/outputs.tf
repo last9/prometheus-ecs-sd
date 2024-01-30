@@ -1,5 +1,5 @@
 output "ecs_service_name" {
-  value = aws_ecs_service.my_service.name
+  value = aws_ecs_service.last9-prom-service-discovery-service.name
 }
 
 output "efs_id" {

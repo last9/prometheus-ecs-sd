@@ -13,14 +13,10 @@ variable "docker_image" {
   type        = string
 }
 
-variable "container_port" {
-  description = "The port on which the container is listening"
-  type        = number
-}
-
 variable "efs_mount_path" {
   description = "Mount path for the EFS volume in the container"
   type        = string
+  default = "/efs/mnt"
 }
 
 variable "subnet_ids" {

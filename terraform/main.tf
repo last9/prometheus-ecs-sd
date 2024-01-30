@@ -51,7 +51,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
   policy_arn = aws_iam_policy.ecs_task_policy.arn
 }
 
-resource "aws_ecs_task_definition" "my_task" {
+resource "aws_ecs_task_definition" "last9-prom-service-discovery-task" {
   family                   = "my-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -63,9 +63,6 @@ resource "aws_ecs_task_definition" "my_task" {
   container_definitions = jsonencode([{
     name  = "my-container",
     image = var.docker_image,
-    portMappings = [{
-      containerPort = var.container_port
-    }],
     mountPoints = [{
       sourceVolume  = "efs-volume",
       containerPath = var.efs_mount_path
@@ -86,15 +83,15 @@ resource "aws_ecs_task_definition" "my_task" {
 # IAM roles and policies
 # ... (Define aws_iam_role.ecs_execution_role and aws_iam_role.ecs_task_role here)
 
-resource "aws_ecs_service" "my_service" {
+resource "aws_ecs_service" "last9-prom-service-discovery-service" {
   name            = "my-service"
   cluster         = aws_ecs_cluster.my_cluster.id
-  task_definition = aws_ecs_task_definition.my_task.arn
+  task_definition = aws_ecs_task_definition.last9-prom-service-discovery-task.arn
   launch_type     = "FARGATE"
 
   network_configuration {
     subnets         = var.subnet_ids
-    security_groups = [aws_security_group.ecs_sg.id]
+    security_groups = [aws_security_group.last9-prom-sd_ecs_sg.id]
     assign_public_ip = true
   }
 
@@ -105,7 +102,7 @@ resource "aws_ecs_service" "my_service" {
 # ... (Define aws_efs_file_system.my_efs and related resources here)
 
 # Security groups
-resource "aws_security_group" "ecs_sg" {
+resource "aws_security_group" "last9-prom-sd_ecs_sg" {
   name        = "ecs-sg"
   description = "Security group for ECS service"
   vpc_id      = var.vpc_id
