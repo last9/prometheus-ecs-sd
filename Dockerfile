@@ -1,29 +1,33 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM python:3.11-slim
+
+RUN apt-get update
+RUN apt-get install -y cron
+
+# Install Poetry
+RUN pip install poetry
+
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=1 \
+    POETRY_VIRTUALENVS_CREATE=1 \
+    POETRY_CACHE_DIR=/tmp/poetry_cache
 
 # Set the working directory in the container to /app
 WORKDIR /app
-
-# Install Poetry
-RUN apt-get -y update \
-    && apt-get install -y --no-install-recommends curl \
-    && curl -sSL https://install.python-poetry.org | python3 - \
-    && ln -s $HOME/.poetry/bin/poetry /usr/local/bin/poetry \
-    && apt-get remove -y curl \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get -y install cron
 
 # Copy the Python script and poetry files (pyproject.toml, poetry.lock) into the container at /app
 COPY main.py pyproject.toml poetry.lock crontab /app/
 
 # Install project dependencies
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+RUN poetry install && rm -rf $POETRY_CACHE_DIR
 
 ### Enable this if you want to run this as a one off process
 ## Run ecs_service_discovery.py when the container launches
 #CMD ["python", "./main.py"]
+
+COPY main.py crontab /app/
+
+RUN poetry install
 
 # Add crontab file in the cron directory
 ADD crontab /etc/cron.d/ecs-service-discovery-cron

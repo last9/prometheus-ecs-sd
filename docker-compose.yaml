@@ -1,0 +1,30 @@
+version: '3.5'
+name: prometheus-ecs-sd
+
+services:
+  ecs-sd-cron:
+    container_name: cron
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared_volume:/shared_volume
+    network_mode: host
+
+  vmagent:
+    container_name: vmagent-scraper
+    image: victoriametrics/vmagent
+    ports:
+      - "8429:8429"
+    volumes:
+      - ./vmagentdata:/vmagentdata
+      - ./prometheus.yml:/etc/vmagent/vmagent.yaml
+      - ./shared_volume:/shared_volume/ecs_file_sd_config.json
+    command:
+      - "--promscrape.config=/etc/vmagent/vmagent.yaml"
+      - "--remoteWrite.url=<remote_write_url>"
+    network_mode: host
+    restart: always
+
+volumes:
+  shared_volume:

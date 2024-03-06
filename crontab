@@ -1,4 +1,4 @@
 # Run ecs_service_discovery.py every 3 minutes
-*/3 * * * * python /app/main.py >> /var/log/cron.log 2>&1
+*/3 * * * * python /app/main.py --cluster_name="<cluster_name>" --output_dir /shared_volume/ --scrape_port 9097 >> /var/log/cron.log 2>&1
 
 # An empty line is required at the end of this file for a valid cron file.
