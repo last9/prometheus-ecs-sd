@@ -75,7 +75,7 @@ def main():
 
   args = parser.parse_args()
 
-  credentials = assume_role(args.role_arn, args.region, 'ecs_sd_script') if args.role_arn else None
+  credentials = assume_role(args.role_arn, 'ecs_sd_script', args.region) if args.role_arn else None
 
   file_sd_config = []
 
