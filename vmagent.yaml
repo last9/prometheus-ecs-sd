@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 1m
+  scrape_timeout: 20s
+# Check https://prometheus.io/docs/prometheus/latest/configuration/configuration for more details
+scrape_configs:
+  - job_name: "ecs_service_sraper"
+    file_sd_configs:
+      - files:
+          - /shared_volume/ecs_file_sd_config.json
+  - job_name: "vmagent"
+    static_configs:
+      - targets: [ "localhost:8429" ]
