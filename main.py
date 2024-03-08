@@ -47,7 +47,7 @@ def get_task_ips(cluster_name, service_name, region, credentials=None):
       aws_region=credentials['Region']
     )
   else:
-    ecs = boto3.client('ecs', region_name=region )
+    ecs = boto3.client('ecs', region_name=region)
 
   # List tasks for the given service
   task_arns = ecs.list_tasks(cluster=cluster_name, serviceName=service_name)['taskArns']
@@ -80,29 +80,22 @@ def main():
   file_sd_config = []
 
   for service in get_ecs_services(args.cluster_name, args.region, credentials):
-    try:
-      service_name = service['serviceName']
-      ips = get_task_ips(args.cluster_name, service_name, args.region, credentials)
-      targets = [f"{ip}:{args.scrape_port}" for ip in ips]
+    service_name = service['serviceName']
+    ips = get_task_ips(args.cluster_name, service_name, args.region, credentials)
+    targets = [f"{ip}:{args.scrape_port}" for ip in ips]
 
-      file_sd_config.append({
-        "targets": targets,
-        "labels": {
-          "job": service_name,
-          "ecs_cluster": args.cluster_name,
-          "ecs_service_name": service_name
-        }
-      })
-    except NoCredentialsError as e:
-      print(f"An error occurred: {e}")
-      file_sd_config.append({
-        "targets": [],
-        "labels": {}
-      })
-    finally:
-      output_file = os.path.join(args.output_dir, 'ecs_file_sd_config.json')
-      with open(output_file, 'w') as file:
-        json.dump(file_sd_config, file, indent=4)
+    file_sd_config.append({
+      "targets": targets,
+      "labels": {
+        "job": service_name,
+        "ecs_cluster": args.cluster_name,
+        "ecs_service_name": service_name
+      }
+    })
+
+  output_file = os.path.join(args.output_dir, 'ecs_file_sd_config.json')
+  with open(output_file, 'w') as file:
+    json.dump(file_sd_config, file, indent=4)
 
 
 if __name__ == "__main__":
